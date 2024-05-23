@@ -1,1 +1,21 @@
-
+X=df.drop("Sales", axis=1)
+y=df["Sales"]
+X.shape
+y.shape
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=30)
+import tensorflow
+from keras import Sequential
+from keras.layers import Dense
+model = Sequential()
+model.add(Dense(128 , activation = "relu" , input_dim = 6)) #first hidden layer
+model.add(Dense(64 , activation = "relu")) #2nd hidden layer
+model.add(Dense(32 , activation = "relu")) #3rd hidden layer
+model.add(Dense(16 , activation = "relu")) #4th hidden layer
+model.add(Dense(8 , activation = "relu")) #5th hidden layer
+model.add(Dense(4 , activation = "relu")) #6th hidden layer
+model.add(Dense(2 , activation = "relu")) #7th hidden layer
+model.add(Dense(1 , activation = "relu")) #Output layer
+model.compile(optimizer='adam', loss='mean_squared_error', metrics=['mean_absolute_error'])
+model.fit(X_train,y_train,epochs = 50)
+y_pred = model.predict(X_test)
