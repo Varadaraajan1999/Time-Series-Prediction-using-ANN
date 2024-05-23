@@ -1,1 +1,97 @@
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+df=pd.read_csv(r"/content/retail_sales.csv")
+df.head()
+df.tail()
+df.shape
+df.info()
 
+# Data Wrangling
+##To return a column labels of the DataFrame
+df.columns
+
+#With Strip function removing unwanted space from 'Date' column
+df['Date']=df['Date'].str.strip()
+
+# Convert 'Date' to datetime format with explicit format specification
+df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%y %H:%M')
+
+# Extract date components
+df['Day'] = df['Date'].dt.day
+df['Month'] = df['Date'].dt.month
+df['Year'] = df['Date'].dt.year
+df['Hour'] = df['Date'].dt.hour
+df['Minute'] = df['Date'].dt.minute
+df['Second'] = df['Date'].dt.second
+
+df.drop("Date",axis=1,inplace=True)
+
+# Rearrange columns
+df = df[['Day','Month', 'Year','Hour', 'Minute','Second','Sales']]
+
+#To find Null value count of each columns in dataframe
+df.isnull().sum()
+
+#Checking for Duplicate rows
+duplicate_rows = df.duplicated().sum()
+duplicate_rows
+
+#To provide statistical summary of the numerical columns
+df.describe().T
+
+# Data Visualization
+## Daywise Sales
+Day_sales = df.groupby('Day')['Sales'].sum()
+plt.figure(figsize=(10, 6))
+Day_sales.plot(kind='line', marker='o', linestyle='-', color='purple')
+plt.title('Day-wise Sales Distribution')
+plt.xlabel('Day')
+plt.ylabel('Total Sales')
+plt.xticks(rotation=0)
+plt.grid(True)
+plt.show()
+
+## Monthly sales
+monthly_sales = df.groupby('Month')['Sales'].sum()
+plt.figure(figsize=(10, 6))
+monthly_sales.plot(kind='bar', color='skyblue')
+plt.title('Monthly Sales Distribution')
+plt.xlabel('Month')
+plt.ylabel('Total Sales')
+plt.xticks(rotation=0)
+plt.grid(axis='y')
+plt.show()
+
+## Yearly Sales
+yearly_sales = df.groupby('Year')['Sales'].sum()
+plt.figure(figsize=(18, 6))
+yearly_sales.plot(kind='bar', color='green')
+plt.title('yearly Sales Distribution')
+plt.xlabel('years')
+plt.ylabel('Total Sales')
+plt.xticks(rotation=0)
+plt.grid(axis='y')
+plt.show()
+
+## Hourly Sales
+hourly_sales = df.groupby('Hour')['Sales'].mean()
+plt.figure(figsize=(10, 6))
+hourly_sales.plot(kind='line', marker='o', linestyle='-', color='orange')
+plt.title('Hourly Sales Trend')
+plt.xlabel('Hour')
+plt.ylabel('Average Sales')
+plt.xticks(hourly_sales.index)
+plt.grid(True)
+plt.show()
+
+## Multicollinearity Identification
+plt.figure(figsize=(15,5))
+sns.heatmap(X_train.corr(),annot=True)
+
+## Feature Scaling
+from sklearn.preprocessing import StandardScaler
+sd=StandardScaler()
+X_train=sd.fit_transform(X_train)
+X_test=sd.transform(X_test)
